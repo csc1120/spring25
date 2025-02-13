@@ -10,7 +10,7 @@
 
       <Label fx:id="label" text="I am a different stage!">
          <font>
-            <Font size="46.0" />
+            <Font size="42.0" />
          </font>
       </Label>
 </HBox>
