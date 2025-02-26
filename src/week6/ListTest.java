@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import week5.SJArrayList;
+//import week5.SJArrayList;
 
 public class ListTest {
     private List<String> list;
@@ -34,7 +34,22 @@ public class ListTest {
     }
 
     // Test size()
+    @Test
+    public void testSize() {
+        Assertions.assertEquals(0,list.size());
+        list.add("one");
+        Assertions.assertEquals(1,list.size());
+        list.add("two");
+        list.add("three");
+        Assertions.assertEquals(3,list.size());
+    }
     // Test add()
+    @Test
+    public void testAdd(){
+        Assertions.assertTrue(list.add("one"));
+        Assertions.assertEquals(1,list.size());
+        Assertions.assertEquals("one",list.get(0));
+    }
     // Test get()
     @Test
     public void testGet() {
@@ -49,4 +64,29 @@ public class ListTest {
         Assertions.assertThrows(IndexOutOfBoundsException.class, () -> list.get(3));
     }
 
+    // Test contains()
+    @Test
+    public void testContains() {
+        list.add("One");
+        list.add("Two");
+        Assertions.assertTrue(list.contains("One"));
+        Assertions.assertTrue(list.contains("Two"));
+        Assertions.assertFalse(list.contains("Three"));
+    }
+
+    @Test
+    public void testRemove() {
+        list.add("One");
+        list.add("Two");
+        list.add("Three");
+        list.add("Four");
+        list.add("Five");
+        Assertions.assertTrue(list.remove("One"));
+        Assertions.assertFalse(list.contains("One"));
+        Assertions.assertTrue(list.remove("Three"));
+        Assertions.assertFalse(list.contains("Three"));
+        Assertions.assertTrue(list.remove("Five"));
+        Assertions.assertFalse(list.contains("Five"));
+
+    }
 }

@@ -27,6 +27,7 @@ public class SubLinkedList<E> implements List<E> {
     public SubLinkedList() {
         size = 0;
         head = null;
+        tail = null;
     }
 
     @Override
@@ -54,12 +55,18 @@ public class SubLinkedList<E> implements List<E> {
 
     @Override
     public boolean contains(Object o) {
-        return false;
+        Node<E> walker = head;
+        boolean targetNotFound = true;
+        while(walker != null && targetNotFound){
+            targetNotFound = !walker.element.equals(o);
+            walker = walker.next;
+        }
+        return !targetNotFound;
     }
 
     @Override
     public Iterator<E> iterator() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -69,12 +76,51 @@ public class SubLinkedList<E> implements List<E> {
 
     @Override
     public <T> T[] toArray(T[] a) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean remove(Object o) {
-        return false;
+        Node<E> walker = head;
+        boolean targetNotFound = true;
+        if(head.element.equals(o)){  // Objects.equals(o,head.element)
+            if(head == tail){
+                tail = null;
+            }
+            head = walker.next;
+            targetNotFound = false;
+        } else {
+	    // <edit>
+	    while(walker.next != null && targetNotFound){
+                targetNotFound = !walker.next.element.equals(o);
+                if(targetNotFound){
+                    walker = walker.next;
+                }
+            }
+	    // In the loop above, we test the value of targetNotFound
+	    //   twice each time through the loop
+	    // If we rearrange the code a little, though, we can only
+	    //   test it once per iteration.  The key is that we want
+	    //   to test the value after we assign it.  This means
+	    //   putting the assignment before the loop test.
+	    
+	    // targetNotFound = !walker.next.element.equals(o);
+	    // while(walker.next != null && targetNotFound){
+	    // 	walker = walker.next;
+	    // 	targetNotFound = !walker.next.element.equals(o);
+            // }
+
+	    // </edit>
+	    
+            if(walker.next == tail){
+                tail = walker;
+            }
+            walker.next = walker.next.next;
+        }
+        if(!targetNotFound){
+            --size;
+        }
+        return !targetNotFound;
     }
 
     @Override
@@ -153,12 +199,12 @@ public class SubLinkedList<E> implements List<E> {
 
     @Override
     public ListIterator<E> listIterator() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public ListIterator<E> listIterator(int index) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
