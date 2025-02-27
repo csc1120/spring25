@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 
 /**
  * A Simple Linked List Implementation
@@ -27,6 +28,36 @@ public class SJLinkedList<E> implements List<E> {
         private Node(E element, Node<E> next) {
             this.element = element;
             this.next = next;
+        }
+    }
+    private class SJIterator implements Iterator<E> {
+        private Node<E> next;
+        private Node<E> lastSeen;
+
+        private SJIterator() {
+            this.next = head;
+            this.lastSeen = null;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return this.next != null;
+        }
+
+        @Override
+        public E next() {
+            if(next == null) {
+                throw new NoSuchElementException();
+            }
+            E result = this.next.element;
+            this.lastSeen = this.next;
+            this.next = this.next.next;
+            return result;
+        }
+
+        @Override
+        public void remove() {
+            Iterator.super.remove();
         }
     }
     private Node<E> head;
@@ -69,7 +100,13 @@ public class SJLinkedList<E> implements List<E> {
 
     @Override
     public Object[] toArray() {
-        throw new UnsupportedOperationException();
+        Object[] result = new Object[this.size];
+        Node<E> current = this.head;
+        for(int i = 0; i < this.size; ++i) {
+            result[i] = current.element;
+            current = current.next;
+        }
+        return result;
     }
 
     @Override
@@ -88,6 +125,11 @@ public class SJLinkedList<E> implements List<E> {
         return current;
     }
 
+    /**
+     * Validates that the index is valid
+     * @param index the index to validate
+     * @throws IndexOutOfBoundsException if index is not valid
+     */
     private void validateIndex(int index) {
         if(index < 0 || index >= this.size) {
             throw new IndexOutOfBoundsException("Invalid index " + index + " for size "
@@ -135,27 +177,53 @@ public class SJLinkedList<E> implements List<E> {
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        throw new UnsupportedOperationException();
+        for(Object o : c) {
+            if(!this.contains(o)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
     public boolean addAll(Collection<? extends E> c) {
-        throw new UnsupportedOperationException();
+        for(E e : c) {
+            this.add(e);
+        }
+        return true;
     }
 
     @Override
     public boolean addAll(int index, Collection<? extends E> c) {
-        throw new UnsupportedOperationException();
+        if(index != this.size) {
+            validateIndex(index);
+        }
+        for(E e : c) {
+            this.add(index++, e);
+        }
+        return true;
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        throw new UnsupportedOperationException();
+        int size = this.size;
+        for(Object o : c) {
+            this.remove(o);
+        }
+        return size != this.size;
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        throw new UnsupportedOperationException();
+        int size = this.size;
+        Node<E> current = this.head;
+        while(current != null) {
+            if(!c.contains(current.element)) {
+                this.remove(current.element);
+            }
+            current = current.next;
+        }
+        return size != this.size;
     }
 
     @Override
