@@ -30,13 +30,64 @@ public class SJLinkedList<E> implements List<E> {
             this.next = next;
         }
     }
+
+    private static class SJSubList<E> extends SJLinkedList<E> {
+        private final SJLinkedList<E> list;
+        private final int offset;
+        private int size;
+
+        private SJSubList(SJLinkedList<E> list, int fromIndex, int toIndex) {
+            this.list = list;
+            this.offset = fromIndex;
+            this.size = toIndex - fromIndex;
+        }
+
+        @Override
+        public int size() {
+            return this.size;
+        }
+
+        @Override
+        public E get(int index) {
+            this.validateIndex(index);
+            return list.get(offset + index);
+        }
+
+        @Override
+        public E set(int index, E element) {
+            this.validateIndex(index);
+            return list.set(offset + index, element);
+        }
+
+        @Override
+        public void add(int index, E element) {
+            this.validateIndex(index);
+            list.add(offset + index, element);
+        }
+
+        @Override
+        public E remove(int index) {
+            this.validateIndex(index);
+            E result = list.remove(offset + index);
+            --this.size;
+            return result;
+        }
+
+        private void validateIndex(int index) {
+            if(index < 0 || index >= this.size) {
+                throw new IndexOutOfBoundsException("Index " + index +
+                        " is invalid for list of size " + this.size);
+            }
+        }
+    }
+
     private class SJIterator implements Iterator<E> {
         private Node<E> next;
-        private Node<E> lastSeen;
+        private Node<E> lastReturned;
 
         private SJIterator() {
             this.next = head;
-            this.lastSeen = null;
+            this.lastReturned = null;
         }
 
         @Override
@@ -46,20 +97,25 @@ public class SJLinkedList<E> implements List<E> {
 
         @Override
         public E next() {
-            if(next == null) {
+            if(this.next == null) {
                 throw new NoSuchElementException();
             }
             E result = this.next.element;
-            this.lastSeen = this.next;
+            this.lastReturned = this.next;
             this.next = this.next.next;
             return result;
         }
 
         @Override
         public void remove() {
-            Iterator.super.remove();
+            if(this.lastReturned == null) {
+                throw new IllegalStateException();
+            }
+            SJLinkedList.this.remove(lastReturned.element);
+            lastReturned = null;
         }
     }
+
     private Node<E> head;
     private int size;
 
@@ -95,7 +151,7 @@ public class SJLinkedList<E> implements List<E> {
 
     @Override
     public Iterator<E> iterator() {
-        throw new UnsupportedOperationException();
+        return new SJIterator();
     }
 
     @Override
@@ -111,9 +167,24 @@ public class SJLinkedList<E> implements List<E> {
 
     @Override
     public <T> T[] toArray(T[] a) {
-        throw new UnsupportedOperationException();
+        if(a.length < this.size) {
+            a = (T[]) new Object[this.size];
+        }
+        Node<E> current = this.head;
+        for(int i = 0; i < this.size; ++i) {
+            a[i] = (T) current.element;
+        }
+        if(a.length > this.size) {
+            a[this.size] = null;
+        }
+        return a;
     }
 
+    /**
+     * Returns a Node stored at a given index
+     * @param index the index of the Node to find
+     * @return the Node at the given index
+     */
     private Node<E> findNode(int index) {
         validateIndex(index);
         Node<E> current = head;
@@ -324,6 +395,6 @@ public class SJLinkedList<E> implements List<E> {
 
     @Override
     public List<E> subList(int fromIndex, int toIndex) {
-        throw new UnsupportedOperationException();
+        return new SJSubList<>(this, fromIndex, toIndex);
     }
 }
