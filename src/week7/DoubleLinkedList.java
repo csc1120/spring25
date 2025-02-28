@@ -1,10 +1,10 @@
 /*
  * Course: CSC1120
- * LinkedList Implementation
+ * Double Linked List Implementation
  *
  */
 
-package week6;
+package week7;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -13,30 +13,36 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 /**
- * A Simple Linked List Implementation
+ * A Simple Double Linked List Implementation
  * @param <E> the type of element stored in the List
  */
-public class SJLinkedList<E> implements List<E> {
+public class DoubleLinkedList<E> implements List<E> {
     private static class Node<E> {
         private E element;
         private Node<E> next;
+        private Node<E> prev;
 
         private Node(E element) {
-            this(element, null);
+            this(element, null, null);
         }
 
         private Node(E element, Node<E> next) {
+            this(element, next, null);
+        }
+
+        private Node(E element, Node<E> next, Node<E> prev) {
             this.element = element;
             this.next = next;
+            this.prev = prev;
         }
     }
 
-    private static class SJSubList<E> extends SJLinkedList<E> {
-        private final SJLinkedList<E> list;
+    private static class SJSubList<E> extends DoubleLinkedList<E> {
+        private final DoubleLinkedList<E> list;
         private final int offset;
         private int size;
 
-        private SJSubList(SJLinkedList<E> list, int fromIndex, int toIndex) {
+        private SJSubList(DoubleLinkedList<E> list, int fromIndex, int toIndex) {
             this.list = list;
             this.offset = fromIndex;
             this.size = toIndex - fromIndex;
@@ -111,19 +117,130 @@ public class SJLinkedList<E> implements List<E> {
             if(this.lastReturned == null) {
                 throw new IllegalStateException();
             }
-            SJLinkedList.this.remove(lastReturned.element);
+            DoubleLinkedList.this.remove(lastReturned.element);
             lastReturned = null;
         }
     }
 
+    private class SJListIterator implements ListIterator<E> {
+        private Node<E> lastReturned;
+        private Node<E> next;
+        private int nextIndex;
+
+        private SJListIterator(int index) {
+            validateIndex(index);
+            this.next = (index == size) ? null : findNode(index);
+            this.nextIndex = index;
+            this.lastReturned = null;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return this.nextIndex < size;
+        }
+
+        @Override
+        public E next() {
+            if(!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            this.lastReturned = this.next;
+            this.next = this.next.next;
+            ++nextIndex;
+            return lastReturned.element;
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            return nextIndex > 0;
+        }
+
+        @Override
+        public E previous() {
+            if(!hasPrevious()) {
+                throw new NoSuchElementException();
+            }
+            // if we are at the end of the list, then going backwards
+            // will make the next node the tail
+            this.lastReturned = (this.next == null) ? tail : this.next.prev;
+            // The node we have just bounced over is both the last node seen and the
+            // next node in the list
+            this.next = this.lastReturned;
+            // we have gone backwards one index
+            --nextIndex;
+            return lastReturned.element;
+        }
+
+        @Override
+        public int nextIndex() {
+            return this.nextIndex;
+        }
+
+        @Override
+        public int previousIndex() {
+            return this.nextIndex - 1;
+        }
+
+        @Override
+        public void remove() {
+            if(lastReturned == null) {
+                throw new IllegalStateException();
+            }
+            // Remove the node from the list
+            Node<E> lastNext = this.lastReturned.next;
+            Node<E> lastPrev = this.lastReturned.prev;
+            // if there is no previous, we are removing the head
+            if(lastPrev == null) {
+                head = lastNext;
+            } else {
+                lastPrev.next = lastNext;
+            }
+            // If there is no next, we are removing the tail
+            if(lastNext == null) {
+                tail = lastPrev;
+            }
+            // If we called previous before remove, next and lastReturned are the same
+            if(this.next == this.lastReturned) {
+                this.next = lastNext;
+            } else {
+                --nextIndex;
+            }
+            // lastReturned node now no longer exists
+            this.lastReturned = null;
+        }
+
+
+
+        @Override
+        public void set(E e) {
+            if(lastReturned == null) {
+                throw new IllegalStateException();
+            }
+            this.lastReturned.element = e;
+        }
+
+        @Override
+        public void add(E e) {
+            this.lastReturned = null;
+            // if next ==  null, adding at the end of the list
+            if(this.next == null) {
+                DoubleLinkedList.this.add(e);
+            } else {
+                DoubleLinkedList.this.add(nextIndex++, e);
+            }
+        }
+    }
+
     private Node<E> head;
+    private Node<E> tail;
     private int size;
 
     /**
      * No-param constructor
      */
-    public SJLinkedList() {
+    public DoubleLinkedList() {
         this.head = null;
+        this.tail = null;
         this.size = 0;
     }
 
@@ -210,12 +327,13 @@ public class SJLinkedList<E> implements List<E> {
 
     @Override
     public boolean add(E e) {
-        Node<E> newNode = new Node<>(e);
+        Node<E> newNode = new Node<>(e, null, tail);
         if(this.head == null) {
             this.head = newNode;
+            this.tail = this.head;
         } else {
-            Node<E> current = findNode(this.size - 1);
-            current.next = newNode;
+            tail.next = newNode;
+            tail = newNode;
         }
         ++this.size;
         return true;
@@ -223,7 +341,6 @@ public class SJLinkedList<E> implements List<E> {
 
     @Override
     public boolean remove(Object o) {
-        Node<E> prev = null;
         Node<E> current = this.head;
         boolean found = false;
         while(current != null && !found) {
@@ -231,14 +348,14 @@ public class SJLinkedList<E> implements List<E> {
                 found = true;
             } else {
                 current = current.next;
-                prev = current;
             }
         }
         if(found) {
-            if(prev == null) {
+            if(current.prev == null) {
                 this.head = this.head.next;
+                this.head.prev = null;
             } else {
-                prev.next = current.next;
+                current.prev.next = current.next;
             }
             --this.size;
             return true;
@@ -332,9 +449,13 @@ public class SJLinkedList<E> implements List<E> {
         }
         if(index > 0 && this.size > 0) {
             Node<E> prev = findNode(index - 1);
-            prev.next = new Node<>(element, prev.next);
+            Node<E> newNode = new Node<>(element, prev.next, prev);
+            prev.next.prev = newNode;
+            prev.next = newNode;
         } else {
-            this.head = new Node<>(element, this.head);
+            Node<E> newNode = new Node<>(element, this.head, null);
+            this.head.prev = newNode;
+            this.head = newNode;
         }
         ++this.size;
     }
@@ -342,17 +463,19 @@ public class SJLinkedList<E> implements List<E> {
     @Override
     public E remove(int index) {
         validateIndex(index);
-        E result;
-        if(index > 0) {
-            Node<E> prev = findNode(index - 1);
-            result = prev.next.element;
-            prev.next = prev.next.next;
+        Node<E> current = findNode(index);
+        if(current == this.tail) {
+            current.prev.next = null;
+            this.tail = current.prev;
+        } else if(current == this.head) {
+            current.next.prev = null;
+            this.head = current.next;
         } else {
-            result = this.head.element;
-            this.head = this.head.next;
+            current.next.prev = current.prev;
+            current.prev.next = current.next;
         }
         --this.size;
-        return result;
+        return current.element;
     }
 
     @Override
@@ -371,26 +494,26 @@ public class SJLinkedList<E> implements List<E> {
 
     @Override
     public int lastIndexOf(Object o) {
-        int index = -1;
-        if(this.head != null) {
-            Node<E> current = this.head;
-            for(int i = 0; i < this.size; ++i) {
+        if(this.tail != null) {
+            Node<E> current = this.tail;
+            for(int i = this.size - 1; i >= 0; --i) {
                 if(current.equals(o)) {
-                    index = i;
+                    return i;
                 }
+                current = current.prev;
             }
         }
-        return index;
+        return -1;
     }
 
     @Override
     public ListIterator<E> listIterator() {
-        throw new UnsupportedOperationException();
+        return new SJListIterator(0);
     }
 
     @Override
     public ListIterator<E> listIterator(int index) {
-        throw new UnsupportedOperationException();
+        return new SJListIterator(index);
     }
 
     @Override
