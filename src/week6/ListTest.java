@@ -1,33 +1,40 @@
+/*
+ * Course: CSC1120
+ * List Test Examples
+ *
+ * Lab 5
+ * You do not need to write comprehensive tests for lab, but
+ * you should write at least two simple tests demonstrating
+ * use of the following annotations: @Test, @BeforeEach, and @AfterEach
+ */
 package week6;
 
-/// # Lab 5
-/// You do not need to write comprehensive tests for lab, but
-/// you should write at least two simple tests demonstrating
-/// use of the following annotations: @Test, @BeforeEach, and @AfterEach
-
-import java.util.List;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-//import week5.SJArrayList;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
+/**
+ * Example tests for the SubLinkedList class
+ */
 public class ListTest {
     private List<String> list;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         list = new SubLinkedList<>();
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         list = null;
     }
 
     // Test isEmpty()
     @Test
-    public void testIsEmpty() {
+    void testIsEmpty() {
         Assertions.assertTrue(list.isEmpty());
         list.add("one");
         Assertions.assertFalse(list.isEmpty());
@@ -35,25 +42,27 @@ public class ListTest {
 
     // Test size()
     @Test
-    public void testSize() {
-        Assertions.assertEquals(0,list.size());
+    void testSize() {
+        Assertions.assertEquals(0, list.size());
         list.add("one");
-        Assertions.assertEquals(1,list.size());
+        Assertions.assertEquals(1, list.size());
         list.add("two");
         list.add("three");
-        Assertions.assertEquals(3,list.size());
+        Assertions.assertEquals(3, list.size());
     }
+
     // Test add()
     @Test
-    public void testAdd(){
+    void testAdd() {
         Assertions.assertTrue(list.add("one"));
-        Assertions.assertEquals(1,list.size());
-        Assertions.assertEquals("one",list.get(0));
+        Assertions.assertEquals(1, list.size());
+        Assertions.assertEquals("one", list.getFirst());
     }
+
     // Test get()
     @Test
-    public void testGet() {
-        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> list.get(0));
+    void testGet() {
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> list.getFirst());
         list.add("one");
         list.add("two");
         list.add("three");
@@ -66,7 +75,7 @@ public class ListTest {
 
     // Test contains()
     @Test
-    public void testContains() {
+    void testContains() {
         list.add("One");
         list.add("Two");
         Assertions.assertTrue(list.contains("One"));
@@ -75,7 +84,7 @@ public class ListTest {
     }
 
     @Test
-    public void testRemove() {
+    void testRemove() {
         list.add("One");
         list.add("Two");
         list.add("Three");
