@@ -4,7 +4,7 @@
  *
  */
 
-package week7;
+package week7a;
 
 import java.util.Collection;
 import java.util.Iterator;
