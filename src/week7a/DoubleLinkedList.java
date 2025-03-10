@@ -14,6 +14,7 @@ import java.util.NoSuchElementException;
 
 /**
  * A Simple Double Linked List Implementation
+ *
  * @param <E> the type of element stored in the List
  */
 public class DoubleLinkedList<E> implements List<E> {
@@ -80,7 +81,7 @@ public class DoubleLinkedList<E> implements List<E> {
         }
 
         private void validateIndex(int index) {
-            if(index < 0 || index >= this.size) {
+            if (index < 0 || index >= this.size) {
                 throw new IndexOutOfBoundsException("Index " + index +
                         " is invalid for list of size " + this.size);
             }
@@ -103,7 +104,7 @@ public class DoubleLinkedList<E> implements List<E> {
 
         @Override
         public E next() {
-            if(this.next == null) {
+            if (this.next == null) {
                 throw new NoSuchElementException();
             }
             E result = this.next.element;
@@ -114,7 +115,7 @@ public class DoubleLinkedList<E> implements List<E> {
 
         @Override
         public void remove() {
-            if(this.lastReturned == null) {
+            if (this.lastReturned == null) {
                 throw new IllegalStateException();
             }
             DoubleLinkedList.this.remove(lastReturned.element);
@@ -141,7 +142,7 @@ public class DoubleLinkedList<E> implements List<E> {
 
         @Override
         public E next() {
-            if(!hasNext()) {
+            if (!hasNext()) {
                 throw new NoSuchElementException();
             }
             this.lastReturned = this.next;
@@ -157,7 +158,7 @@ public class DoubleLinkedList<E> implements List<E> {
 
         @Override
         public E previous() {
-            if(!hasPrevious()) {
+            if (!hasPrevious()) {
                 throw new NoSuchElementException();
             }
             // if we are at the end of the list, then going backwards
@@ -183,24 +184,24 @@ public class DoubleLinkedList<E> implements List<E> {
 
         @Override
         public void remove() {
-            if(lastReturned == null) {
+            if (lastReturned == null) {
                 throw new IllegalStateException();
             }
             // Remove the node from the list
             Node<E> lastNext = this.lastReturned.next;
             Node<E> lastPrev = this.lastReturned.prev;
             // if there is no previous, we are removing the head
-            if(lastPrev == null) {
+            if (lastPrev == null) {
                 head = lastNext;
             } else {
                 lastPrev.next = lastNext;
             }
             // If there is no next, we are removing the tail
-            if(lastNext == null) {
+            if (lastNext == null) {
                 tail = lastPrev;
             }
             // If we called previous before remove, next and lastReturned are the same
-            if(this.next == this.lastReturned) {
+            if (this.next == this.lastReturned) {
                 this.next = lastNext;
             } else {
                 --nextIndex;
@@ -210,10 +211,9 @@ public class DoubleLinkedList<E> implements List<E> {
         }
 
 
-
         @Override
         public void set(E e) {
-            if(lastReturned == null) {
+            if (lastReturned == null) {
                 throw new IllegalStateException();
             }
             this.lastReturned.element = e;
@@ -223,7 +223,7 @@ public class DoubleLinkedList<E> implements List<E> {
         public void add(E e) {
             this.lastReturned = null;
             // if next ==  null, adding at the end of the list
-            if(this.next == null) {
+            if (this.next == null) {
                 DoubleLinkedList.this.add(e);
             } else {
                 DoubleLinkedList.this.add(nextIndex++, e);
@@ -244,6 +244,18 @@ public class DoubleLinkedList<E> implements List<E> {
         this.size = 0;
     }
 
+    /**
+     * Constructor that takes an existing list and adds it to the new list
+     *
+     * @param list the existing list
+     */
+    public DoubleLinkedList(List<E> list) {
+        this.head = null;
+        this.tail = null;
+        this.size = 0;
+        this.addAll(list);
+    }
+
     @Override
     public int size() {
         return this.size;
@@ -257,8 +269,8 @@ public class DoubleLinkedList<E> implements List<E> {
     @Override
     public boolean contains(Object o) {
         Node<E> current = head;
-        while(current != null) {
-            if(current.element.equals(o)) {
+        while (current != null) {
+            if (current.element.equals(o)) {
                 return true;
             }
             current = current.next;
@@ -275,7 +287,7 @@ public class DoubleLinkedList<E> implements List<E> {
     public Object[] toArray() {
         Object[] result = new Object[this.size];
         Node<E> current = this.head;
-        for(int i = 0; i < this.size; ++i) {
+        for (int i = 0; i < this.size; ++i) {
             result[i] = current.element;
             current = current.next;
         }
@@ -284,14 +296,14 @@ public class DoubleLinkedList<E> implements List<E> {
 
     @Override
     public <T> T[] toArray(T[] a) {
-        if(a.length < this.size) {
+        if (a.length < this.size) {
             a = (T[]) new Object[this.size];
         }
         Node<E> current = this.head;
-        for(int i = 0; i < this.size; ++i) {
+        for (int i = 0; i < this.size; ++i) {
             a[i] = (T) current.element;
         }
-        if(a.length > this.size) {
+        if (a.length > this.size) {
             a[this.size] = null;
         }
         return a;
@@ -299,6 +311,7 @@ public class DoubleLinkedList<E> implements List<E> {
 
     /**
      * Returns a Node stored at a given index
+     *
      * @param index the index of the Node to find
      * @return the Node at the given index
      */
@@ -306,7 +319,7 @@ public class DoubleLinkedList<E> implements List<E> {
         validateIndex(index);
         Node<E> current = head;
         int i = 0;
-        while(i < index) {
+        while (i < index) {
             current = current.next;
             ++i;
         }
@@ -315,11 +328,12 @@ public class DoubleLinkedList<E> implements List<E> {
 
     /**
      * Validates that the index is valid
+     *
      * @param index the index to validate
      * @throws IndexOutOfBoundsException if index is not valid
      */
     private void validateIndex(int index) {
-        if(index < 0 || index >= this.size) {
+        if (index < 0 || index >= this.size) {
             throw new IndexOutOfBoundsException("Invalid index " + index + " for size "
                     + this.size);
         }
@@ -328,7 +342,7 @@ public class DoubleLinkedList<E> implements List<E> {
     @Override
     public boolean add(E e) {
         Node<E> newNode = new Node<>(e, null, tail);
-        if(this.head == null) {
+        if (this.head == null) {
             this.head = newNode;
             this.tail = this.head;
         } else {
@@ -343,17 +357,17 @@ public class DoubleLinkedList<E> implements List<E> {
     public boolean remove(Object o) {
         Node<E> current = this.head;
         boolean found = false;
-        while(current != null && !found) {
-            if(current.element.equals(o)) {
+        while (current != null && !found) {
+            if (current.element.equals(o)) {
                 found = true;
             } else {
                 current = current.next;
             }
         }
-        if(found) {
-            if(current.prev == null) {
-                this.head = this.head.next;
+        if (found) {
+            if (current.prev == null) {
                 this.head.prev = null;
+                this.head = this.head.next;
             } else {
                 current.prev.next = current.next;
             }
@@ -365,8 +379,8 @@ public class DoubleLinkedList<E> implements List<E> {
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        for(Object o : c) {
-            if(!this.contains(o)) {
+        for (Object o : c) {
+            if (!this.contains(o)) {
                 return false;
             }
         }
@@ -375,7 +389,7 @@ public class DoubleLinkedList<E> implements List<E> {
 
     @Override
     public boolean addAll(Collection<? extends E> c) {
-        for(E e : c) {
+        for (E e : c) {
             this.add(e);
         }
         return true;
@@ -383,10 +397,10 @@ public class DoubleLinkedList<E> implements List<E> {
 
     @Override
     public boolean addAll(int index, Collection<? extends E> c) {
-        if(index != this.size) {
+        if (index != this.size) {
             validateIndex(index);
         }
-        for(E e : c) {
+        for (E e : c) {
             this.add(index++, e);
         }
         return true;
@@ -395,7 +409,7 @@ public class DoubleLinkedList<E> implements List<E> {
     @Override
     public boolean removeAll(Collection<?> c) {
         int size = this.size;
-        for(Object o : c) {
+        for (Object o : c) {
             this.remove(o);
         }
         return size != this.size;
@@ -405,8 +419,8 @@ public class DoubleLinkedList<E> implements List<E> {
     public boolean retainAll(Collection<?> c) {
         int size = this.size;
         Node<E> current = this.head;
-        while(current != null) {
-            if(!c.contains(current.element)) {
+        while (current != null) {
+            if (!c.contains(current.element)) {
                 this.remove(current.element);
             }
             current = current.next;
@@ -444,10 +458,10 @@ public class DoubleLinkedList<E> implements List<E> {
 
     @Override
     public void add(int index, E element) {
-        if(index != this.size) {
+        if (index != this.size) {
             validateIndex(index);
         }
-        if(index > 0 && this.size > 0) {
+        if (index > 0 && this.size > 0) {
             Node<E> prev = findNode(index - 1);
             Node<E> newNode = new Node<>(element, prev.next, prev);
             prev.next.prev = newNode;
@@ -464,10 +478,10 @@ public class DoubleLinkedList<E> implements List<E> {
     public E remove(int index) {
         validateIndex(index);
         Node<E> current = findNode(index);
-        if(current == this.tail) {
+        if (current == this.tail) {
             current.prev.next = null;
             this.tail = current.prev;
-        } else if(current == this.head) {
+        } else if (current == this.head) {
             current.next.prev = null;
             this.head = current.next;
         } else {
@@ -480,10 +494,10 @@ public class DoubleLinkedList<E> implements List<E> {
 
     @Override
     public int indexOf(Object o) {
-        if(this.head != null) {
+        if (this.head != null) {
             Node<E> current = this.head;
             for (int i = 0; i < this.size; ++i) {
-                if(current.equals(o)) {
+                if (current.equals(o)) {
                     return i;
                 }
                 current = current.next;
@@ -494,10 +508,10 @@ public class DoubleLinkedList<E> implements List<E> {
 
     @Override
     public int lastIndexOf(Object o) {
-        if(this.tail != null) {
+        if (this.tail != null) {
             Node<E> current = this.tail;
-            for(int i = this.size - 1; i >= 0; --i) {
-                if(current.equals(o)) {
+            for (int i = this.size - 1; i >= 0; --i) {
+                if (current.equals(o)) {
                     return i;
                 }
                 current = current.prev;
