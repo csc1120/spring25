@@ -305,6 +305,18 @@ public class SJLinkedList<E> implements List<E> {
         return current.element;
     }
 
+    public E getR(int index) { // O(n)
+        validateIndex(index);
+        return getR(index, this.head);
+    }
+
+    private E getR(int stepsLeft, Node<E> current) {
+        if (stepsLeft == 0) {
+            return current.element;
+        }
+        return getR(stepsLeft - 1, current.next);
+    }
+
     @Override
     public E set(int index, E element) { // O(n)
         validateIndex(index);
