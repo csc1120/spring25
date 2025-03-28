@@ -299,7 +299,7 @@ public class SJLinkedList<E> implements List<E> {
     public E get(int index) { // O(n)
         validateIndex(index);
         Node<E> current = this.head;
-        for (int i = 0; i < this.size; i++) {
+        for (int i = 0; i < index; i++) {
             current = current.next;
         }
         return current.element;
@@ -321,7 +321,7 @@ public class SJLinkedList<E> implements List<E> {
     public E set(int index, E element) { // O(n)
         validateIndex(index);
         Node<E> current = this.head;
-        for (int i = 0; i < this.size; i++) {
+        for (int i = 0; i < index; i++) {
             current = current.next;
         }
         E old = current.element;
