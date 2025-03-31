@@ -123,15 +123,60 @@ public class BinaryTree<E> {
         return sb.toString();
     }
 
-    private void postOrderTraversal(Node<E> node, int depth, BiConsumer<E, Integer> consumer) {
-        // L, R, V
-        // base case
+    /**
+     * Pre-order traversal of the node (Visit, Left, Right)
+     * @param consumer the function performed during the traversal
+     */
+    public void preOrderTraversal(BiConsumer<E, Integer> consumer) {
+        preOrderTraversal(this.root, 1, consumer);
+    }
+    private void preOrderTraversal(Node<E> node, int depth, BiConsumer<E, Integer> consumer) {
+        // Visit, Left, Right
         if(node != null) {
-            // L
+            // Visit
+            consumer.accept(node.data, depth);
+            // Left
+            preOrderTraversal(node.left, depth + 1, consumer);
+            // Right
+            preOrderTraversal(node.right, depth + 1, consumer);
+        }
+    }
+
+    /**
+     * In-order traversal of the node (Left, Visit, Right)
+     * @param consumer the function performed during the traversal
+     */
+    public void inOrderTraversal(BiConsumer<E, Integer> consumer) {
+        inOrderTraversal(this.root, 1, consumer);
+    }
+    private void inOrderTraversal(Node<E> node, int depth, BiConsumer<E, Integer> consumer) {
+        // Left, Visit, Right
+        if(node != null) {
+            // Left
+            preOrderTraversal(node.left, depth + 1, consumer);
+            // Visit
+            consumer.accept(node.data, depth);
+            // Right
+            preOrderTraversal(node.right, depth + 1, consumer);
+        }
+    }
+
+    /**
+     * Post-order traversal of the node (Left, Right, Visit)
+     * @param consumer the function performed during the traversal
+     */
+    public void postOrderTraversal(BiConsumer<E, Integer> consumer) {
+        postOrderTraversal(this.root, 1, consumer);
+    }
+
+    private void postOrderTraversal(Node<E> node, int depth, BiConsumer<E, Integer> consumer) {
+        // Left, Right, Visit
+        if(node != null) {
+            // Left
             postOrderTraversal(node.left, depth + 1, consumer);
-            // R
+            // Right
             postOrderTraversal(node.right, depth + 1, consumer);
-            // V
+            // Visit
             consumer.accept(node.data, depth);
         }
     }
