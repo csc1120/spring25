@@ -116,22 +116,6 @@ public class BinarySearchTree<E extends Comparable<E>> extends BinaryTree<E>
 
     @Override
     public List<E> toList() {
-        // Do an inorder traversal of the tree, adding the elements to a List.
-        // For a BST, this will return the elements in sorted order
-        return toList(this.root);
-    }
-
-    private List<E> toList(Node<E> node) {
-        if(node == null) {
-            return Collections.emptyList();
-        }
-        // Inorder traversal: L V R
-        // traverse left
-        List<E> result = new LinkedList<>(toList(node.left));
-        // visit
-        result.add(node.data);
-        // traverse right
-        result.addAll(toList(node.right));
-        return result;
+        return null;
     }
 }
