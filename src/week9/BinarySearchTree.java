@@ -4,8 +4,7 @@
  */
 package week9;
 
-import java.util.Collections;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,6 +14,7 @@ import java.util.List;
 public class BinarySearchTree<E extends Comparable<E>> extends BinaryTree<E>
         implements SearchTree<E> {
     private boolean addResult; // did we add or not?
+    private E deleteReturn;
 
     @Override
     public boolean add(E item) {
@@ -99,7 +99,59 @@ public class BinarySearchTree<E extends Comparable<E>> extends BinaryTree<E>
 
     @Override
     public E delete(E target) {
-        return null;
+        // call helper method
+        this.root = delete(target, this.root);
+        return deleteReturn;
+    }
+
+    private Node<E> delete(E target, Node<E> node) {
+        // node == null
+        if(node == null) {
+            // not in the tree
+            deleteReturn = null;
+        } else {
+            // do something
+            int compResult = target.compareTo(node.data);
+            if(compResult < 0) {
+                node.left = delete(target, node.left);
+            } else if(compResult > 0) {
+                node.right = delete(target, node.right);
+            } else {
+                // found it!!!
+                deleteReturn = node.data; // save return value
+                // delete the node
+                if(node.left == null) {
+                    // replace node being deleted with right child
+                    return node.right;
+                } else if(node.right == null) {
+                    return node.left;
+                } else {
+                    // two children
+                    // go to the left tree, find largest value
+                    if(node.left.right == null) {
+                        node.data = node.left.data;
+                        node.left = node.left.left;
+                    } else {
+                        // left child DOES have a right child
+                        // find the largest value of the left subtree
+                        node.data = findLargestChild(node.left);
+                    }
+                }
+            }
+        }
+        return node;
+    }
+
+    private E findLargestChild(Node<E> node) {
+        E result = null;
+        if(node.right.right == null) { // found largest node
+            result = node.right.data;
+            node.right = node.right.left;
+        } else {
+            // keep looking
+            findLargestChild(node.right);
+        }
+        return result;
     }
 
     @Override
@@ -116,6 +168,12 @@ public class BinarySearchTree<E extends Comparable<E>> extends BinaryTree<E>
 
     @Override
     public List<E> toList() {
-        return null;
+        final List<E> result = new ArrayList<>();
+        inOrderTraversal((e, _) -> {
+            if(e != null) {
+                result.add(e);
+            }
+        });
+        return result;
     }
 }
