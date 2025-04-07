@@ -1,16 +1,27 @@
+/*
+ * Course: CSC-1120
+ * Open Addressing HashMap Implementation
+ */
 package week11;
 
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+/**
+ * Simple HashMap using Open Addressing
+ * @param <K> the type of Key
+ * @param <V> the type of Value
+ */
 public class SJHashMapOpen<K, V> implements Map<K, V> {
     private static class Entry<K, V> implements Map.Entry<K, V> {
         private final K key;
         private V value;
 
-        public Entry(K key, V value) {
+        private Entry(K key, V value) {
             this.key = key;
             this.value = value;
         }
@@ -38,6 +49,9 @@ public class SJHashMapOpen<K, V> implements Map<K, V> {
     private Entry<K, V>[] entries;
     private int numKeys;
 
+    /**
+     * No-param constructor
+     */
     public SJHashMapOpen() {
         numKeys = 0;
         entries = (Entry<K, V>[]) new Entry[INITIAL_CAPACITY];
@@ -55,36 +69,23 @@ public class SJHashMapOpen<K, V> implements Map<K, V> {
 
     @Override
     public boolean containsKey(Object key) {
+        // get index
         int index = findIndex(key);
         // linear probing?
         K k = findKey(index, key);
+        // does k exist?
         return k == null;
-    }
-
-    private int findIndex(Object key) {
-        int index = key.hashCode() % entries.length;
-        if(index < 0) {
-            index += entries.length;
-        }
-        return index;
-    }
-
-    private K findKey(int index, Object key) {
-        while(entries[index] != null && !key.equals(entries[index].key)) {
-            // linear probing
-            ++index;
-            // if at end?
-            if(index == entries.length) {
-                // go back to beginning
-                index = 0;
-            }
-            // index %= entries.length;
-        }
-        return entries[index].key;
     }
 
     @Override
     public boolean containsValue(Object value) {
+        if(value != null) {
+            for (Entry<K, V> e : entries) {
+                if (value.equals(e.value)) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -105,26 +106,53 @@ public class SJHashMapOpen<K, V> implements Map<K, V> {
 
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
-
+        m.forEach(this::put);
     }
 
     @Override
     public void clear() {
-
+        entries = (Entry<K, V>[]) new Entry[INITIAL_CAPACITY];
+        numKeys = 0;
     }
 
     @Override
     public Set<K> keySet() {
-        return Set.of();
+        return Arrays.stream(entries)
+                .map(e -> e.key)
+                .collect(Collectors.toSet());
     }
 
     @Override
     public Collection<V> values() {
-        return List.of();
+        return Arrays.stream(entries)
+                .map(e -> e.value)
+                .toList();
     }
 
     @Override
     public Set<Map.Entry<K, V>> entrySet() {
-        return Set.of();
+        return new HashSet<>(Arrays.asList(entries));
+    }
+
+    private int findIndex(Object key) {
+        int index = key.hashCode() % entries.length;
+        if(index < 0) {
+            index += entries.length;
+        }
+        return index;
+    }
+
+    private K findKey(int index, Object key) {
+        while(entries[index] != null && !key.equals(entries[index].key)) {
+            // linear probing
+            ++index;
+            // if at end?
+            if(index == entries.length) {
+                // go back to beginning
+                index = 0;
+            }
+            // or: index %= entries.length;
+        }
+        return entries[index] == null ? null : entries[index].key;
     }
 }
