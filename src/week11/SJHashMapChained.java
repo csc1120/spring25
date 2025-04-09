@@ -70,7 +70,7 @@ public class SJHashMapChained<K, V> implements Map<K, V> {
     public boolean containsKey(Object key) {
         if(key != null) {
             int index = findIndex(key);
-            for (Entry<K, V> e : entries.get(index)) {
+            for (Entry<K, V> e : entries[index]) {
                 if(key.equals(e.key)) {
                     return true;
                 }
@@ -148,9 +148,9 @@ public class SJHashMapChained<K, V> implements Map<K, V> {
     }
 
     private int findIndex(Object key) {
-        int index = key.hashCode() % entries.size();
+        int index = key.hashCode() % entries.length;
         if(index < 0) {
-            index += entries.size();
+            index += entries.length;
         }
         return index;
     }
