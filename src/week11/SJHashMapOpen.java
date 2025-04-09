@@ -69,21 +69,15 @@ public class SJHashMapOpen<K, V> implements Map<K, V> {
 
     @Override
     public boolean containsKey(Object key) {
-        // get index
-        int index = findIndex(key);
-        // linear probing?
-        K k = findKey(index, key);
-        // does k exist?
-        return k == null;
+        int index = findKey(key);
+        return entries[index] != null;
     }
 
     @Override
     public boolean containsValue(Object value) {
-        if(value != null) {
-            for (Entry<K, V> e : entries) {
-                if (value.equals(e.value)) {
-                    return true;
-                }
+        for (Entry<K, V> e : entries) {
+            if (e != null && e.value.equals(value)) {
+                return true;
             }
         }
         return false;
@@ -91,12 +85,25 @@ public class SJHashMapOpen<K, V> implements Map<K, V> {
 
     @Override
     public V get(Object key) {
-        return null;
+        int index = findKey(key);
+        return entries[index] == null ? null : entries[index].value;
     }
 
     @Override
     public V put(K key, V value) {
-        return null;
+        int index = findKey(key);
+        if (entries[index] == null) {
+            entries[index] = new Entry<>(key, value);
+            ++numKeys;
+            double loadFactor = (double) numKeys / entries.length;
+            if (loadFactor > LOAD_FACTOR_THRESHOLD) {
+                rehash();
+            }
+            return null;
+        }
+        V oldValue = entries[index].value;
+        entries[index].value = value;
+        return oldValue;
     }
 
     @Override
@@ -139,25 +146,28 @@ public class SJHashMapOpen<K, V> implements Map<K, V> {
         return new HashSet<>(Arrays.asList(entries));
     }
 
-    private int findIndex(Object key) {
+    private int findKey(Object key) {
         int index = key.hashCode() % entries.length;
-        if(index < 0) {
+        if (index < 0) {
             index += entries.length;
+        }
+        while (entries[index] != null && !key.equals(entries[index].key)) {
+            ++index;
+            if (index == entries.length) {
+                index = 0;
+            }
         }
         return index;
     }
 
-    private K findKey(int index, Object key) {
-        while(entries[index] != null && !key.equals(entries[index].key)) {
-            // linear probing
-            ++index;
-            // if at end?
-            if(index == entries.length) {
-                // go back to beginning
-                index = 0;
+    private void rehash() {
+        Entry<K, V>[] oldEntries = entries;
+        entries = new Entry[entries.length * 2 + 1];
+        numKeys = 0;
+        for (Entry<K, V> entry : oldEntries) {
+            if (entry != null) {
+                put(entry.getKey(), entry.getValue());
             }
-            // or: index %= entries.length;
         }
-        return entries[index] == null ? null : entries[index].key;
     }
 }
