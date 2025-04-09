@@ -44,7 +44,7 @@ public class SJHashMapOpen<K, V> implements Map<K, V> {
         }
     }
     private static final int INITIAL_CAPACITY = 11;
-    private static final double LOAD_FACTOR = 0.8;
+    private static final double LOAD_FACTOR_THRESHOLD = 0.8;
     private final Entry<K, V> deleted = new Entry<>(null, null);
     private Entry<K, V>[] entries;
     private int numKeys;
@@ -101,6 +101,11 @@ public class SJHashMapOpen<K, V> implements Map<K, V> {
 
     @Override
     public V remove(Object key) {
+        // homework
+        // remember to replace the entry with the deleted entry and
+        // keep track of the number of deleted keys with an instance
+        // variable. This will also change how you calculate the
+        // load factor.
         return null;
     }
 
