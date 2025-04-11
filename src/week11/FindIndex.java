@@ -10,7 +10,7 @@ import java.util.Scanner;
  * A pretty awful tool that finds the index of a key
  */
 public class FindIndex {
-    public static void main() {
+    public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         boolean done;
         do {
