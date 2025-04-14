@@ -18,7 +18,19 @@ public class SortingDriver {
         Integer[] param = new Integer[unsorted.length];
 
         System.arraycopy(unsorted, 0, param, 0, unsorted.length);
+        selection.sort(param);
+        printArray(param);
+
+        System.arraycopy(unsorted, 0, param, 0, unsorted.length);
+        insertion.sort(param);
+        printArray(param);
+
+        System.arraycopy(unsorted, 0, param, 0, unsorted.length);
         shell.sort(param);
+        printArray(param);
+
+        System.arraycopy(unsorted, 0, param, 0, unsorted.length);
+        merge.sort(param);
         printArray(param);
     }
 
