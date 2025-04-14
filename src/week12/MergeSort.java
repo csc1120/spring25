@@ -36,7 +36,7 @@ public class MergeSort implements SortAlgorithm {
         int j = 0; // pointer for the right array
         int k = 0; // pointer for the output array
         // while there are still elements left in both sub-arrays
-        while (i < left.length && k < right.length) {
+        while (i < left.length && j < right.length) {
             // add the smallest value between the left and right sub-arrays
             // to the output and increment the pointer of the array you
             // added from and the output array
