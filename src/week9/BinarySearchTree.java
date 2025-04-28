@@ -13,8 +13,8 @@ import java.util.List;
  */
 public class BinarySearchTree<E extends Comparable<E>> extends BinaryTree<E>
         implements SearchTree<E> {
-    private boolean addResult; // did we add or not?
-    private E deleteReturn;
+    protected boolean addResult; // did we add or not?
+    protected E deleteReturn;
 
     @Override
     public boolean add(E item) {
