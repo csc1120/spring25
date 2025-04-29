@@ -63,7 +63,7 @@ public class RedBlackTree<E extends Comparable<E>> extends BinarySearchTreeWithR
                         // rotate and change colors
                         ((RedBlackNode<E>) localRoot.left).red = false;
                         localRoot.red = true;
-                        return rotateRight(localRoot);
+                        localRoot = (RedBlackNode<E>) rotateRight(localRoot);
                         // check for case 3 (L-R and both are red)
                     } else if(localRoot.left.right != null &&
                             ((RedBlackNode<E>) localRoot.left.right).red) {
@@ -71,7 +71,7 @@ public class RedBlackTree<E extends Comparable<E>> extends BinarySearchTreeWithR
                         localRoot.left = rotateLeft(localRoot.left);
                         ((RedBlackNode<E>) localRoot.left).red = false;
                         localRoot.red = true;
-                        return rotateRight(localRoot);
+                        localRoot = (RedBlackNode<E>) rotateRight(localRoot);
                     }
                 }
             }
