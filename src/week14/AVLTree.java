@@ -186,7 +186,7 @@ public class AVLTree<E extends Comparable<E>> extends BinarySearchTreeWithRotate
             if (this.decrease) {
                 // increment the balance, because we removed a node from the left subtree
                 incrementBalance(localRoot);
-                // if this causes the treeto be critically imbalanced, rebalance
+                // if this causes the tree to be critically imbalanced, rebalance
                 if (localRoot.balance > AVLNode.RIGHT_HEAVY) {
                     localRoot = rebalanceRightLeft(localRoot);
                 }
@@ -282,7 +282,7 @@ public class AVLTree<E extends Comparable<E>> extends BinarySearchTreeWithRotate
         return node;
     }
     private E findLargestChild(AVLNode<E> parent) {
-        E returnValue = null;
+        E returnValue;
         // if the right node is the last node, it is the largest
         if(parent.right.right == null) {
             returnValue = parent.right.data;
