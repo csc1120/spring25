@@ -54,11 +54,11 @@ public class Student implements Cloneable {
         }
         // not null?
         // same type?
-        if(!(o instanceof Student)) {
+        if(!(o instanceof Student that)) {
             return false;
         }
         // Instance variables
-        return this.id == ((Student)o).id;
+        return this.id == that.id;
     }
 
     @Override
