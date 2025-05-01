@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 /**
  * A simple ArrayList implementation
@@ -32,9 +33,14 @@ public class SJArrayList<E> implements List<E> {
      * A constructor that sets the initial capacity of the backing array
      *
      * @param initialCapacity the initial capacity of the backing array
+     * @throws NegativeArraySizeException thrown if the capacity is less than 0
      */
     @SuppressWarnings("unchecked")
     public SJArrayList(int initialCapacity) {
+        if(initialCapacity < 0) {
+            throw new NegativeArraySizeException();
+        }
+
         this.size = 0;
         data = (E[]) new Object[initialCapacity];
     }
@@ -52,7 +58,7 @@ public class SJArrayList<E> implements List<E> {
     @Override
     public boolean contains(Object o) { // O(n)
         for (int i = 0; i < this.size; ++i) {
-            if (data[i].equals(o)) {
+            if (Objects.equals(data[i], o)) {
                 return true;
             }
         }
@@ -102,10 +108,11 @@ public class SJArrayList<E> implements List<E> {
     @Override
     public boolean remove(Object o) {
         for (int i = 0; i < this.size; ++i) {
-            if (this.data[i].equals(o)) {
+            if (Objects.equals(this.data[i], o)) {
                 for (int j = i; j < this.size - 1; ++j) {
                     this.data[j] = this.data[j + 1];
                 }
+                --this.size;
                 return true;
             }
         }
@@ -124,6 +131,9 @@ public class SJArrayList<E> implements List<E> {
 
     @Override
     public boolean addAll(Collection<? extends E> c) {
+        if(c.isEmpty()) {
+            return false;
+        }
         for (E e : c) {
             this.add(e);
         }
@@ -157,10 +167,13 @@ public class SJArrayList<E> implements List<E> {
     @Override
     public boolean retainAll(Collection<?> c) {
         boolean changed = false;
-        for (E e : this.data) {
-            if (!c.contains(e)) {
+        int i = 0;
+        while (i < this.size) {
+            if (!c.contains(this.data[i])) {
+                this.remove(i);
                 changed = true;
-                this.remove(e);
+            } else {
+                i++;
             }
         }
         return changed;
