@@ -122,7 +122,7 @@ public class RedBlackTree<E extends Comparable<E>> extends BinarySearchTreeWithR
             if (node.red) {
                 result = (RedBlackNode<E>) node.right;
             } else if (node.right == null) {
-                blackReduced = true;
+                this.blackReduced = true;
             } else if (((RedBlackNode<E>) node.right).red) {
                 ((RedBlackNode<E>) node.right).red = false;
                 result = (RedBlackNode<E>) node.right;
@@ -146,7 +146,7 @@ public class RedBlackTree<E extends Comparable<E>> extends BinarySearchTreeWithR
                 if (((RedBlackNode<E>) node.left).red) {
                     node.left = node.left.left;
                 } else if (node.left.left == null) {
-                    blackReduced = true;
+                    this.blackReduced = true;
                     node.left = null;
                 } else if (((RedBlackNode<E>) node.left.left).red) {
                     ((RedBlackNode<E>) node.left.left).red = false;
@@ -158,10 +158,10 @@ public class RedBlackTree<E extends Comparable<E>> extends BinarySearchTreeWithR
                 result = node;
             } else {
                 node.data = findLargestChild((RedBlackNode<E>) node.left);
-                if (blackReduced) {
+                if (this.blackReduced) {
                     node.left = fixUpRight((RedBlackNode<E>) node.left);
                 }
-                if (blackReduced) {
+                if (this.blackReduced) {
                     result = fixUpLeft(node);
                 } else {
                     result = node;
@@ -178,7 +178,7 @@ public class RedBlackTree<E extends Comparable<E>> extends BinarySearchTreeWithR
             if (((RedBlackNode<E>) parent.right).red) {
                 parent.right = parent.right.left;
             } else if (parent.right.left == null) {
-                blackReduced = true;
+                this.blackReduced = true;
                 parent.right = null;
             } else if (((RedBlackNode<E>) parent.right.left).red) {
                 ((RedBlackNode<E>) parent.right.left).red = false;
@@ -189,7 +189,7 @@ public class RedBlackTree<E extends Comparable<E>> extends BinarySearchTreeWithR
             }
         } else {
             returnValue = findLargestChild((RedBlackNode<E>) parent.right);
-            if (blackReduced) {
+            if (this.blackReduced) {
                 parent.right = fixUpRight((RedBlackNode<E>) parent.right);
             }
         }
@@ -203,7 +203,7 @@ public class RedBlackTree<E extends Comparable<E>> extends BinarySearchTreeWithR
                 return null;
             } else {
                 oldValue = removeFromLeft((RedBlackNode<E>) parent.left, item);
-                if (blackReduced) {
+                if (this.blackReduced) {
                     parent.left = fixUpLeft((RedBlackNode<E>) parent.left);
                 }
             }
@@ -212,7 +212,7 @@ public class RedBlackTree<E extends Comparable<E>> extends BinarySearchTreeWithR
                 return null;
             } else {
                 oldValue = removeFromRight((RedBlackNode<E>) parent.left, item);
-                if (blackReduced) {
+                if (this.blackReduced) {
                     parent.left = fixUpRight((RedBlackNode<E>) parent.left);
                 }
             }
@@ -230,7 +230,7 @@ public class RedBlackTree<E extends Comparable<E>> extends BinarySearchTreeWithR
                 return null;
             } else {
                 oldValue = removeFromLeft((RedBlackNode<E>) parent.right, item);
-                if (blackReduced) {
+                if (this.blackReduced) {
                     parent.right = fixUpLeft((RedBlackNode<E>) parent.right);
                 }
             }
@@ -239,7 +239,7 @@ public class RedBlackTree<E extends Comparable<E>> extends BinarySearchTreeWithR
                 return null;
             } else {
                 oldValue = removeFromRight((RedBlackNode<E>) parent.right, item);
-                if (blackReduced) {
+                if (this.blackReduced) {
                     parent.right = fixUpRight((RedBlackNode<E>) parent.right);
                 }
             }
@@ -255,7 +255,7 @@ public class RedBlackTree<E extends Comparable<E>> extends BinarySearchTreeWithR
         if (localRoot.right != null
                 && ((RedBlackNode<E>) localRoot.right).red) {
             ((RedBlackNode<E>) localRoot.right).red = false;
-            blackReduced = false;
+            this.blackReduced = false;
             return localRoot;
         }
         RedBlackNode<E> s = (RedBlackNode<E>) localRoot.left;
@@ -264,7 +264,7 @@ public class RedBlackTree<E extends Comparable<E>> extends BinarySearchTreeWithR
             localRoot.red = true;
             RedBlackNode<E> returnValue = (RedBlackNode<E>) rotateRight(localRoot);
             returnValue.right = fixUpRight((RedBlackNode<E>) returnValue.right);
-            if (blackReduced) {
+            if (this.blackReduced) {
                 result = fixUpRight(returnValue);
             } else {
                 result = returnValue;
@@ -286,7 +286,7 @@ public class RedBlackTree<E extends Comparable<E>> extends BinarySearchTreeWithR
                 assert s.left != null;
                 ((RedBlackNode<E>) s.left).red = false;
                 localRoot.red = false;
-                blackReduced = false;
+                this.blackReduced = false;
                 result = (RedBlackNode<E>) rotateRight(localRoot);
             }
         }
@@ -298,7 +298,7 @@ public class RedBlackTree<E extends Comparable<E>> extends BinarySearchTreeWithR
         if (localRoot.left != null
                 && ((RedBlackNode<E>) localRoot.left).red) {
             ((RedBlackNode<E>) localRoot.left).red = false;
-            blackReduced = false;
+            this.blackReduced = false;
             return localRoot;
         }
         RedBlackNode<E> s = (RedBlackNode<E>) localRoot.right;
@@ -307,7 +307,7 @@ public class RedBlackTree<E extends Comparable<E>> extends BinarySearchTreeWithR
             localRoot.red = true;
             Node<E> returnValue = rotateLeft(localRoot);
             returnValue.left = fixUpLeft((RedBlackNode<E>) returnValue.left);
-            if (blackReduced) {
+            if (this.blackReduced) {
                 result = fixUpLeft((RedBlackNode<E>) returnValue);
             } else {
                 result = (RedBlackNode<E>) returnValue;
@@ -329,7 +329,7 @@ public class RedBlackTree<E extends Comparable<E>> extends BinarySearchTreeWithR
                 assert s.right != null;
                 ((RedBlackNode<E>) s.right).red = false;
                 localRoot.red = false;
-                blackReduced = false;
+                this.blackReduced = false;
                 result = (RedBlackNode<E>) rotateLeft(localRoot);
             }
         }

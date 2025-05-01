@@ -12,8 +12,17 @@ import java.util.function.BiConsumer;
  */
 public class BinaryTree<E> {
     protected static class Node<E> {
+        /**
+         * The left child of the node
+         */
         public Node<E> left;
+        /**
+         * The right child of the node
+         */
         public Node<E> right;
+        /**
+         * The data stored in the node
+         */
         public E data;
 
         protected Node(E data) {
@@ -153,11 +162,11 @@ public class BinaryTree<E> {
         // Left, Visit, Right
         if(node != null) {
             // Left
-            preOrderTraversal(node.left, depth + 1, consumer);
+            inOrderTraversal(node.left, depth + 1, consumer);
             // Visit
             consumer.accept(node.data, depth);
             // Right
-            preOrderTraversal(node.right, depth + 1, consumer);
+            inOrderTraversal(node.right, depth + 1, consumer);
         }
     }
 
