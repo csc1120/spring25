@@ -37,7 +37,7 @@ public class SJArrayList<E> implements List<E> {
      */
     @SuppressWarnings("unchecked")
     public SJArrayList(int initialCapacity) {
-        if(initialCapacity < 0) {
+        if (initialCapacity < 0) {
             throw new NegativeArraySizeException();
         }
 
@@ -131,7 +131,7 @@ public class SJArrayList<E> implements List<E> {
 
     @Override
     public boolean addAll(Collection<? extends E> c) {
-        if(c.isEmpty()) {
+        if (c.isEmpty()) {
             return false;
         }
         for (E e : c) {
@@ -376,7 +376,7 @@ public class SJArrayList<E> implements List<E> {
                 throw new IllegalStateException();
             }
             SJArrayList.this.remove(this.lastReturned);
-            if(this.lastReturned < this.next) {
+            if (this.lastReturned < this.next) {
                 --this.next;
             }
             this.lastReturned = -1;
@@ -414,7 +414,7 @@ public class SJArrayList<E> implements List<E> {
 
             @Override
             public E next() {
-                if(!this.hasNext()) {
+                if (!this.hasNext()) {
                     throw new NoSuchElementException();
                 }
                 ++this.next;
@@ -427,6 +427,7 @@ public class SJArrayList<E> implements List<E> {
                 --this.next;
             }
         }
+
         private class SubListListIterator implements ListIterator<E> {
             private final SJListIterator parentIterator;
             private int next;
@@ -436,7 +437,7 @@ public class SJArrayList<E> implements List<E> {
             }
 
             private SubListListIterator(int index) {
-                if(index < SubList.this.fromIndex || index > SubList.this.toIndex) {
+                if (index < SubList.this.fromIndex || index > SubList.this.toIndex) {
                     throw new IndexOutOfBoundsException();
                 }
                 parentIterator = new SJListIterator(index);
@@ -450,7 +451,7 @@ public class SJArrayList<E> implements List<E> {
 
             @Override
             public E next() {
-                if(!this.hasNext()) {
+                if (!this.hasNext()) {
                     throw new NoSuchElementException();
                 }
                 ++this.next;
@@ -464,7 +465,7 @@ public class SJArrayList<E> implements List<E> {
 
             @Override
             public E previous() {
-                if(!this.hasPrevious()) {
+                if (!this.hasPrevious()) {
                     throw new NoSuchElementException();
                 }
                 --this.next;
@@ -483,7 +484,7 @@ public class SJArrayList<E> implements List<E> {
 
             @Override
             public void remove() {
-                if(!this.hasPrevious()) {
+                if (!this.hasPrevious()) {
                     throw new NoSuchElementException();
                 }
                 --this.next;
@@ -501,10 +502,15 @@ public class SJArrayList<E> implements List<E> {
                 ++this.next;
             }
         }
+
         private final int fromIndex;
         private int toIndex;
 
         private SubList(int fromIndex, int toIndex) {
+            if (fromIndex < 0 || fromIndex >= SJArrayList.this.size ||
+                    toIndex < 0 || toIndex > SJArrayList.this.size) {
+                throw new IndexOutOfBoundsException();
+            }
             this.fromIndex = fromIndex;
             this.toIndex = toIndex;
         }
@@ -521,8 +527,8 @@ public class SJArrayList<E> implements List<E> {
 
         @Override
         public boolean contains(Object o) {
-            for(int i = this.fromIndex; i < this.toIndex; ++i) {
-                if(SJArrayList.this.get(i).equals(o)) {
+            for (int i = this.fromIndex; i < this.toIndex; ++i) {
+                if (SJArrayList.this.get(i).equals(o)) {
                     return true;
                 }
             }
@@ -568,8 +574,8 @@ public class SJArrayList<E> implements List<E> {
 
         @Override
         public boolean remove(Object o) {
-            for(int i = this.fromIndex; i < this.toIndex; ++i) {
-                if(SJArrayList.this.data[i].equals(o)) {
+            for (int i = this.fromIndex; i < this.toIndex; ++i) {
+                if (SJArrayList.this.data[i].equals(o)) {
                     SJArrayList.this.remove(i);
                     --this.toIndex;
                     return true;
@@ -580,8 +586,8 @@ public class SJArrayList<E> implements List<E> {
 
         @Override
         public boolean containsAll(Collection<?> c) {
-            for(Object o : c) {
-                if(!this.contains(o)) {
+            for (Object o : c) {
+                if (!this.contains(o)) {
                     return false;
                 }
             }
@@ -635,7 +641,7 @@ public class SJArrayList<E> implements List<E> {
         @Override
         public void clear() {
             int numItems = this.size();
-            for(int i = 0; i < numItems; ++i) {
+            for (int i = 0; i < numItems; ++i) {
                 SJArrayList.this.remove(this.fromIndex);
             }
             this.toIndex = this.fromIndex;
@@ -693,7 +699,7 @@ public class SJArrayList<E> implements List<E> {
         }
 
         private void validateIndex(int index) {
-            if(index < this.fromIndex || index >= this.toIndex) {
+            if (index < 0 || index >= this.size()) {
                 throw new IndexOutOfBoundsException();
             }
         }
