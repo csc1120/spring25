@@ -295,6 +295,7 @@ public class DoubleLinkedList<E> implements List<E> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T[] toArray(T[] a) {
         if (a.length < this.size) {
             a = (T[]) new Object[this.size];
