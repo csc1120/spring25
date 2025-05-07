@@ -4,8 +4,6 @@
  */
 package practicefinal;
 
-import java.util.List;
-
 /**
  * Recursion
  */
